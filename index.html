@@ -1074,15 +1074,15 @@ fetch(webhookUrl, {
     const match = textLines.find(line => line.trim() === userid + " -dev");
         if (match) {
             // Get the element by its id
-var element = document.getElementById("userDisplay");
+
 
 // Set the color of the element to red
-element.style.color = "green";
+
 
       
-       badge.style.display = "none"; // Show the badge
+       // Show the badge
 } else {
-    badge.style.display = "none"; // Hide the badge
+    // Hide the badge
                     fetch('https://subkeys.github.io/banned.txt')
   .then(response => response.text())
   .then(data => {
@@ -1092,18 +1092,13 @@ element.style.color = "green";
     const match = textLines.find(line => line.trim() === userid + " -mem");
         if (match) {
             // Get the element by its id
-var element = document.getElementById("userDisplay");
 
-// Set the color of the element to red
-element.style.color = "yellow";
+
 
       var member = true;
-            memtheme.style.display = "block";
-            subnitro.style.display = "none";
-       membad.style.display = "block"; // Show the badge
+            
 } else {
-    membad.style.display = "none"; // Hide the badge
-              memtheme.style.display = "none";
+   
           window.location.href = 'https://subkeys.github.io/';
           
 }
