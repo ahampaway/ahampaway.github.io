@@ -1,971 +1,299 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <script>
-      if (localStorage.getItem("favorites") === null) {
-        localStorage.setItem("favorites","bruh");
-      }
-    </script>
-    <title class="cloak">Home | MacVG</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <script src="search.js"></script>
-    
-    <link
-      class="favicon"
-      rel="icon"
-      type="image/x-icon"
-      href="/macvg/logo.png"
-    />
-    <link href="style.css" rel="stylesheet" type="text/css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-      integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <script src="cloak.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
-    />
-    <script src="/macvg/app.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Password Protected Page</title>
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #dialogText {
+            color: white;
+            background-color: #333333;
+        }
+        
+        #dialogWrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: table;
+            background-color: #EEEEEE;
+        }
+        
+        #dialogWrapCell {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        #mainDialog {
+            max-width: 400px;
+            margin: 5px;
+            border: solid #AAAAAA 1px;
+            border-radius: 10px;
+            box-shadow: 3px 3px 5px 3px #AAAAAA;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #FFFFFF;
+            overflow: hidden;
+            text-align: left;
+        }
+        #mainDialog > * {
+            padding: 10px 30px;
+        }
+        #passArea {
+            padding: 20px 30px;
+            background-color: white;
+        }
+        #passArea > * {
+            margin: 5px auto;
+        }
+        #pass {
+            width: 100%;
+            height: 40px;
+            font-size: 30px;
+        }
+        
+        #messageWrapper {
+            float: left;
+            vertical-align: middle;
+            line-height: 30px;
+        }
+        
+        .notifyText {
+            display: none;
+        }
+        
+        #invalidPass {
+            color: red;
+        }
+        
+        #success {
+            color: green;
+        }
+        
+        #submitPass {
+            font-size: 20px;
+            border-radius: 5px;
+            background-color: #E7E7E7;
+            border: solid gray 1px;
+            float: right;
+            cursor: pointer;
+        }
+        #contentFrame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #attribution {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+        #attribution, #attribution a {
+            color: #999;
+        }
+        .error {
+            display: none;
+            color: red;
+        }
+    </style>
   </head>
   <body>
-    <nav class="nav">
-      <a href="/macvg/" class="logo2" style="background-color: black">
-        <img src="/macvg/macvg-logo.png" alt="MacVG Logo" /> </a
-      ><a href="featured.html" class="nav-link">Featured</a
-      ><a href="action-adventure.html" class="nav-link">Action</a
-      ><a href="strategy-puzzle.html" class="nav-link">Strategy</a
-      ><a href="driving-sports.html" class="nav-link">Driving</a
-      ><a href="casual.html" class="nav-link">Casual</a
-      ><a href="more.html" class="nav-link">More</a>
-      <a
-        href="https://forms.gle/fpnxZqiK3SFrzUdSA"
-        target="_blank"
-        style="color: white"
-        id="feedback"
-        title="Feedback"
-        ><i
-          class="fa-solid fa-comment"
-          style="color: #ffffff; background-color: transparent"
-        ></i
-      ></a>
-    </nav>
-    <div class="tip">
-      <p>
-        <b>MacVG version 1.2</b> NOVEMBER UPDATE!<br />
-        FAVORITES, DOWNLOAD, AND MORE! Check them out
-        <a href="/blogs/updates/macvg.html" target="_blank">here</a>!<br /><button
-          class="got-it"
-          onclick="gotIt()"
-        >
-          <span class="helper"></span>
-          Got it!
-        </button>
-      </p>
+    <iframe id="contentFrame" frameBorder="0" allowfullscreen></iframe>
+    <div id="dialogWrap">
+        <div id="dialogWrapCell">
+            <div id="mainDialog">
+                <div id="dialogText">This page is password protected.</div>
+                <div id="passArea">
+                    <p id="passwordPrompt">Password</p>
+                    <input id="pass" type="password" name="pass" autofocus>
+                    <div>
+                        <span id="messageWrapper">
+                            <span id="invalidPass" class="error">Sorry, please try again.</span>
+                            <span id="trycatcherror" class="error">Sorry, something went wrong.</span>
+                            <span id="success" class="notifyText">Success!</span>
+                            &nbsp;
+                        </span>
+                        <button id="submitPass" type="button">Submit</button>
+                        <div style="clear: both;"></div>
+                    </div>
+                </div>
+                <div id="securecontext" class="error">
+                    <p>
+                        Sorry, but password protection only works over a secure connection. Please load this page via HTTPS.
+                    </p>
+                </div>
+                <div id="nocrypto" class="error">
+                    <p>
+                        Your web browser appears to be outdated. Please visit this page using a modern browser.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-    <style>
-      #feedback {
-        color: white;
-        text-decoration: none;
-        position: absolute;
-        margin: none;
-        top: 4px;
-        right: 0px;
-        margin-inline: 10px;
-      }
-    </style>
-    <header class="homeheader">
-      <div class="title">Welcome To MacVG!</div>
-      <div class="sub">
-        A little place where you can have <strong>FUN!</strong>
-      </div>
-    </header>
-    <div class="functions">
-      <input
-        type="text"
-        id="searchInput"
-        oninput="search()"
-        autocomplete="off"
-        placeholder="Search games"
-      /><button class="random" id="random" title="Random Game Selector">
-        <span class="button-helper"></span>🎲
-      </button>
+    <div id="attribution">
+        Protected by <a href="https://www.maxlaumeister.com/pagecrypt/">PageCrypt</a>
     </div>
-    <div class="games-container" id="favoriteList"></div>
-    <div class="games-container" id="randomList"></div>
-
-    <script src="/macvg/random.js"></script>
-    <div class="games-container" id="list">
-      <a href="projects/1/" class="game" id="game1"> 1 </a>
-      <a href="projects/1v1lol/" class="game" id="game2"> 1v1.lol </a>
-
-      <a href="projects/10-minutes-till-dawn/" class="game" id="game4">
-        10 Minutes Till Dawn
-      </a>
-
-      <a href="projects/2048/" class="game" id="game6"> 2048 </a>
-
-      <a href="projects/2048-multitask/" class="game" id="game7">
-        2048 Multitask
-      </a>
-
-      <a href="projects/9007199254740992/" class="game" id="game8">
-        900719925474
-      </a>
-
-      <a href="projects/achievementunlocked/" class="game" id="game9">
-        Achievement Unlocked
-      </a>
-
-      <a href="projects/adarkroom/" class="game" id="game10"> A Dark Room </a>
-
-      <a href="projects/adrenalinechallenge/" class="game" id="game11">
-        Adrenaline Challenge
-      </a>
-
-      <a href="projects/adventure-drivers/" class="game" id="game12">
-        Adventure Drivers
-      </a>
-
-      <a href="projects/ages-of-conflict/" class="game" id="game13">
-        Ages of Conflict
-      </a>
-
-      <a href="projects/alienhominid/" class="game" id="game14">
-        Alien Hominid
-      </a>
-
-      <a href="projects/amidst-the-clouds/" class="game" id="game15">
-        Amidst the Clouds
-      </a>
-
-      <a href="projects/among-us/" class="game" id="game16"> Among Us </a>
-
-      <a href="projects/angry-sharks/" class="game" id="game17">
-        Angry Sharks
-      </a>
-
-      <a href="projects/aquapark-slides/" class="game" id="game18">
-        Aquapark Slides
-      </a>
-
-      <a href="projects/avalanche/" class="game" id="game19"> Avalanche </a>
-
-      <a href="projects/backrooms/" class="game" id="game20"> Backrooms </a>
-
-      <a href="projects/bad-ice-cream/" class="game" id="game21">
-        Bad Ice Cream
-      </a>
-
-      <a href="projects/bad-ice-cream-2/" class="game" id="game22">
-        Bad Ice Cream 2
-      </a>
-
-      <a href="projects/bad-ice-cream-3/" class="game" id="game23">
-        Bad Ice Cream 3
-      </a>
-
-      <a href="projects/baldis-basics/" class="game" id="game24">
-        Baldi's Basics
-      </a>
-
-      <a href="projects/ballistic-chickens/" class="game" id="game25">
-        Ballistic Chickens
-      </a>
-
-      <a href="projects/basketball-stars/" class="game" id="game26">
-        Basketball Stars
-      </a>
-
-      <a href="projects/battleforgondor/" class="game" id="game28">
-        Battle for Gondor
-      </a>
-
-      <a href="projects/bigredbutton/" class="game" id="game29">
-        Big Red Button
-      </a>
-
-      <a href="projects/bitlife/" class="game" id="game30"> Bitlife </a>
-
-      <a href="projects/blacholesquare/" class="game" id="game31">
-        Black Hole Square
-      </a>
-
-      <a href="projects/blackknight/" class="game" id="game32">
-        Black Knight
-      </a>
-
-      <a href="projects/bloonstd/" class="game" id="game33"> Bloons TD </a>
-
-      <a href="projects/bloonstd2/" class="game" id="game34"> Bloons TD 2 </a>
-
-      <a href="projects/bloxors/" class="game" id="game35"> Bloxors </a>
-
-      <a href="projects/bobtherobber2/" class="game" id="game36">
-        Bob the Robber 2
-      </a>
-
-      <a href="projects/boxhead2play/" class="game" id="game37"> Box Head </a>
-
-      <a href="projects/boxing-random/" class="game" id="game38">
-        Boxing Random
-      </a>
-
-      <a href="projects/breakingthebank/" class="game" id="game39">
-        Breaking the Bank
-      </a>
-
-      <a href="projects/btts/" class="game" id="game40">
-        Big Tower Tiny Square
-      </a>
-
-      <a href="projects/cannon-basketball-4/" class="game" id="game42">
-        Cannon Basketball 4
-      </a>
-
-      <a href="projects/canyondefense/" class="game" id="game43">
-        Canyon Defense
-      </a>
-
-      <a href="projects/cars-simulator/" class="game" id="game44">
-        Cars Simulator
-      </a>
-
-      <a href="projects/cell-machine/" class="game" id="game45">
-        Cell Machine
-      </a>
-
-      <a href="projects/champion-island/" class="game" id="game46">
-        Champion Island
-      </a>
-
-      <a href="projects/championarcher/" class="game" id="game47">
-        Champion Archer
-      </a>
-
-      <a href="projects/chrome-dino/" class="game" id="game49"> Dino Game </a>
-
-      <a href="projects/circlo/" class="game" id="game50"> circlO </a>
-
-      <a href="projects/cluster-rush/" class="game" id="game51">
-        Cluster Rush
-      </a>
-
-      <a href="projects/connect3/" class="game" id="game52"> Connect 3 </a>
-
-      <a href="projects/cookie-clicker/" class="game" id="game53">
-        Cookie Clicker
-      </a>
-
-      <a href="projects/core-ball/" class="game" id="game54"> Core Ball </a>
-
-      <a href="projects/craftmine/" class="game" id="game55"> CraftMine </a>
-
-      <a href="projects/creativekillchamber/" class="game" id="game56">
-        Creative Kill Chamber
-      </a>
-
-      <a href="projects/crossyroad/" class="game" id="game57"> Crossy Road </a>
-
-      <a href="projects/csgo-clicker/" class="game" id="game58">
-        CS:GO Clicker
-      </a>
-
-      <a href="projects/ctr/" class="game" id="game59"> Cut the Rope </a>
-
-      <a href="projects/ctr-holiday/" class="game" id="game60">
-        Cut the Rope Holiday
-      </a>
-
-      <a href="projects/ctr-tr/" class="game" id="game61">
-        Cut the Rope Time Travel
-      </a>
-
-      <a href="projects/cubefield/" class="game" id="game62"> Cubefield </a>
-
-      <a href="projects/dante/" class="game" id="game64"> Dante </a>
-
-      <a href="projects/deal-or-no-deal/" class="game" id="game65">
-        Deal or No Deal
-      </a>
-
-      <a href="projects/death-run-3d/" class="game" id="game66">
-        Death Run 3D
-      </a>
-
-      <a href="projects/defend-the-tank/" class="game" id="game67">
-        Defend the Tank
-      </a>
-
-      <a href="projects/doctor-acorn2/" class="game" id="game68">
-        Doctor Acorn 2
-      </a>
-
-      <a href="projects/doge2048/" class="game" id="game69"> Doge 2048 </a>
-
-      <a href="projects/DogeMiner/" class="game" id="game70"> Doge Miner </a>
-
-      <a href="projects/doodle-jump/" class="game" id="game71"> Doodle Jump </a>
-
-      <a href="projects/doublewires/" class="game" id="game72">
-        Double Wires
-      </a>
-
-      <a href="projects/dragon-vs-bricks/" class="game" id="game73">
-        Dragon vs Bricks
-      </a>
-
-      <a href="projects/draw-the-hill/" class="game" id="game74">
-        Draw the Hill
-      </a>
-
-      <a href="projects/drive-mad/" class="game" id="game75"> Drive Mad </a>
-
-      <a href="projects/ducklife1/" class="game" id="game76"> Duck Life </a>
-
-      <a href="projects/ducklife3/" class="game" id="game78"> Duck Life 3 </a>
-
-      <a href="projects/ducklife4/" class="game" id="game79"> Duck Life 4 </a>
-
-      <a href="projects/edge-surf/" class="game" id="game80">
-        Edge Let's Surf
-      </a>
-
-      <a href="projects/edgenotfound/" class="game" id="game81">
-        Edge Not Found
-      </a>
-
-      <a href="projects/eel-slap/" class="game" id="game82"> Eel Slap </a>
-
-      <a href="projects/elasticman/" class="game" id="game83"> Elastic Man </a>
-
-      <a href="projects/endlesswar3/" class="game" id="game84">
-        Endless War 3
-      </a>
-
-      <a href="projects/escapingtheprison/" class="game" id="game85">
-        Escaping the Prison
-      </a>
-
-      <a href="projects/evil-glitch/" class="game" id="game86"> Evil Glitch </a>
-
-      <a href="projects/evolution/" class="game" id="game87"> Evolution </a>
-
-      <a href="projects/exo/" class="game" id="game88"> Exo </a>
-
-      <a href="projects/factoryballs/" class="game" id="game89">
-        Factory Balls Forever
-      </a>
-
-      <a href="projects/fancypantsadventures/" class="game" id="game90">
-        Fancy Pants Adventures
-      </a>
-
-      <a href="projects/fake-virus/" class="game" id="game91"> Fake Virus </a>
-
-      <a href="projects/fireboywatergirlforesttemple/" class="game" id="game92">
-        Fireboy and Watergirl
-      </a>
-
-      <a href="projects/flappy-bird/" class="game" id="game94"> Flappy Bird </a>
-
-      <a href="projects/flashtetris/" class="game" id="game95">
-        Flash Tetris
-      </a>
-
-      <a href="projects/fnaw/" class="game" id="game97">
-        Five Nights at Winston's
-      </a>
-
-      <a href="projects/fridaynightfunkin/" class="game" id="game98">
-        Friday Night Funkin'
-      </a>
-
-      <a href="projects/froggys-battle/" class="game" id="game99">
-        Froggy's Battle
-      </a>
-
-      <a href="projects/fruitninja/" class="game" id="game100"> Fruit Ninja </a>
-
-      <a href="projects/frying-nemo/" class="game" id="game101">
-        Frying Nemo
-      </a>
-
-      <a href="projects/game-inside/" class="game" id="game102">
-        Game Inside a Game Inside a Game...
-      </a>
-
-      <a href="projects/generic-fishing-game/" class="game" id="game103">
-        Generic Fishing Game
-      </a>
-
-      <a href="projects/geodash/" class="game" id="game104">
-        Geometry Dash Scratch
-      </a>
-
-      <a href="projects/georgeandtheprinter/" class="game" id="game105">
-        George and the Printer
-      </a>
-
-      <a href="projects/getaway-shootout/" class="game" id="game106">
-        Getaway Shootout
-      </a>
-
-      <a href="projects/gimme-the-airpod/" class="game" id="game107">
-        Gimme the Airpod
-      </a>
-
-      <a href="projects/go-ball/" class="game" id="game109"> Go Ball </a>
-
-      <a href="projects/goodnight/" class="game" id="game110"> GOODNIGHT </a>
-
-      <a href="projects/google-feud/" class="game" id="game111">
-        Google Feud
-      </a>
-
-      <a href="projects/google-snake/" class="game" id="game112">
-        Google Snake
-      </a>
-
-      <a href="projects/gravity-soccer/" class="game" id="game113">
-        Gravity Soccer
-      </a>
-
-      <a href="projects/greybox/" class="game" id="game114">
-        Grey Box Testing
-      </a>
-
-      <a href="projects/hackertype/" class="game" id="game116">
-        Hacker Typer
-      </a>
-
-      <a href="projects/handshakes/" class="game" id="game117"> Handshakes </a>
-
-      <a href="projects/happy-hop/" class="game" id="game118"> Happy Hop </a>
-
-      <a href="projects/hba/" class="game" id="game119"> Hover Bot Arena </a>
-
-      <a href="projects/helicopter/" class="game" id="game120"> Helicopter </a>
-
-      <a href="projects/hexempire/" class="game" id="game121"> Hex Empire </a>
-
-      <a href="projects/hextris/" class="game" id="game123"> Hextris </a>
-
-      <a href="projects/hungry-lamu/" class="game" id="game124">
-        Hungry Lamu
-      </a>
-
-      <a href="projects/idle-breakout/" class="game" id="game125">
-        Idle Breakout
-      </a>
-
-      <a href="projects/impossiblequiz/" class="game" id="game127">
-        Impossible Quiz
-      </a>
-
-      <a href="projects/jetpack-joyride/" class="game" id="game129">
-        Jetpack Joyride
-      </a>
-
-      <a href="projects/just-fall/" class="game" id="game130"> JustFall.lol </a>
-
-      <a href="projects/just-one-boss/" class="game" id="game131">
-        Just One Boss
-      </a>
-
-      <a href="projects/kitchen-gun-game/" class="game" id="game132">
-        Kitchen Gun Game
-      </a>
-
-      <a href="projects/kittencannon/" class="game" id="game133">
-        Kitten Cannon
-      </a>
-
-      <a href="projects/knife-master/" class="game" id="game134">
-        Knife Master
-      </a>
-
-      <a href="projects/learntofly/" class="game" id="game136">
-        Learn To Fly
-      </a>
-
-      <a href="projects/learntofly2/" class="game" id="game137">
-        Learn To Fly 2
-      </a>
-
-      <a href="projects/macboard/" class="game" id="game217"> MacBoard </a>
-
-      <a href="projects/madalin-stunt-cars-2/" class="game" id="game138">
-        Madalin Stunt Cars 2
-      </a>
-
-      <a href="projects/mario/" class="game" id="game140"> Mario </a>
-
-      <a href="projects/marvinspectrum/" class="game" id="game141">
-        Marvin Spectrum
-      </a>
-
-      <a href="projects/matrixrampage/" class="game" id="game142">
-        Matrix Rampage
-      </a>
-
-      <a href="projects/meme2048/" class="game" id="game143"> Meme 2048 </a>
-
-      <a href="projects/merge-round-racers/" class="game" id="game144">
-        Merge Round Racers
-      </a>
-
-      <a href="projects/mineblocks/" class="game" id="game145"> Mine Blocks </a>
-
-      <a href="projects/minecraft-15/" class="game" id="game146">
-        Eaglecraft 1.5
-      </a>
-
-      <a href="projects/minecraft-18/" class="game" id="game147">
-        Eaglecraft 1.8
-      </a>
-
-      <a href="projects/minecraft-classic/" class="game" id="game148">
-        Minecraft Classic
-      </a>
-
-      <a href="projects/minecraftbeta/" class="game" id="game149">
-        Minecraft Classic Hacks
-      </a>
-
-      <a href="projects/minesweeper/" class="game" id="game150">
-        Minesweeper
-      </a>
-
-      <a href="projects/miniputt/" class="game" id="game151"> Mini-putt </a>
-
-      <a href="projects/missiles/" class="game" id="game152"> Missiles </a>
-
-      <a href="projects/motox3m/" class="game" id="game153"> Moto X3M </a>
-
-      <a href="projects/motox3m2/" class="game" id="game154"> Moto X3M 2 </a>
-
-      <a href="projects/motox3m-pool/" class="game" id="game155">
-        Moto X3M Pool
-      </a>
-
-      <a href="projects/motox3m-spooky/" class="game" id="game156">
-        Moto X3M Spooky
-      </a>
-
-      <a href="projects/motox3m-winter/" class="game" id="game157">
-        Moto X3M Winter
-      </a>
-
-      <a href="projects/my-rusty-submarine/" class="game" id="game158">
-        My Rusty Submarine
-      </a>
-
-      <a href="projects/n-gon/" class="game" id="game159"> n-gon </a>
-
-      <a href="projects/ninja/" class="game" id="game160"> Ninja </a>
-
-      <a href="projects/ninjavsevilcorp/" class="game" id="game161">
-        Ninja vs Evil Corp
-      </a>
-
-      <a href="projects/ns-shaft/" class="game" id="game163"> NS-Shaft </a>
-
-      <a href="projects/OfflineParadise/" class="game" id="game164">
-        Offline Paradise
-      </a>
-
-      <a href="projects/om-bounce/" class="game" id="game165">
-        Om Nom Bounce
-      </a>
-
-      <a href="projects/ovo/" class="game" id="game166"> OvO </a>
-
-      <a href="projects/pandemic2/" class="game" id="game167"> Pandemic 2 </a>
-
-      <a href="projects/papasburgeria/" class="game" id="game168">
-        Papa's Burgeria
-      </a>
-
-      <a href="projects/papaspizzaria/" class="game" id="game169">
-        Papa's Pizzaria
-      </a>
-
-      <a href="projects/paperio2/" class="game" id="game170"> Paper.io 2 </a>
-
-      <a href="projects/papery-planes/" class="game" id="game171">
-        Papery Planes
-      </a>
-
-      <a href="projects/particle-clicker/" class="game" id="game172">
-        Particle Clicker
-      </a>
-
-      <a href="projects/pixel-gun-survival/" class="game" id="game173">
-        Pixel Gun Survival
-      </a>
-
-      <a href="projects/polybranch/" class="game" id="game174"> PolyBranch </a>
-
-      <a href="projects/popcat-classic/" class="game" id="game175">
-        POPCAT CLASSIC
-      </a>
-
-      <a href="projects/portalflash/" class="game" id="game176">
-        Portal (Flash)
-      </a>
-
-      <a href="projects/protektor/" class="game" id="game178"> Protektor </a>
-
-      <a href="projects/push-the-square/" class="game" id="game179">
-        Push The Square
-      </a>
-
-      <a href="projects/push-your-luck/" class="game" id="game180">
-        Push Your Luck
-      </a>
-
-      <a href="projects/rabbit-samurai/" class="game" id="game181">
-        Rabbit Samurai
-      </a>
-
-      <a href="projects/rabbit-samurai2/" class="game" id="game182">
-        Rabbit Samurai 2
-      </a>
-
-      <a href="projects/retro-bowl/" class="game" id="game184"> Retro Bowl </a>
-
-      <a href="projects/riddleschool/" class="game" id="game185">
-        Riddle School 1
-      </a>
-
-      <a href="projects/riddleschool2/" class="game" id="game186">
-        Riddle School 2
-      </a>
-
-      <a href="projects/riddleschool3/" class="game" id="game187">
-        Riddle School 3
-      </a>
-
-      <a href="projects/riddleschool4/" class="game" id="game188">
-        Riddle School 4
-      </a>
-
-      <a href="projects/riddleschool5/" class="game" id="game189">
-        Riddle School 5
-      </a>
-
-      <a href="projects/riddletransfer/" class="game" id="game190">
-        Riddle School Transfer 1
-      </a>
-
-      <a href="projects/riddletransfer2/" class="game" id="game191">
-        Riddle School Transfer 2
-      </a>
-
-      <a href="projects/rolling-forests/" class="game" id="game192">
-        Rolling Forests
-      </a>
-
-      <a href="projects/rolly-vortex/" class="game" id="game193">
-        Rolly Vortex
-      </a>
-
-      <a href="projects/rooftop-snipers/" class="game" id="game194">
-        Rooftop Snipers
-      </a>
-
-      <a href="projects/ruffle/" class="game" id="game195"> Ruffle Emulator </a>
-
-      <a href="projects/sandboxels/" class="game" id="game196"> Sandboxels </a>
-
-      <a href="projects/santy-is-home/" class="game" id="game197">
-        Santy Is Home
-      </a>
-
-      <a href="projects/scrapmetal/" class="game" id="game199">
-        Scrap Metal 3
-      </a>
-
-      <a href="projects/shellshockers/" class="game" id="game200">
-        Shellshockers
-      </a>
-
-      <a href="projects/shuttledeck/" class="game" id="game201">
-        SHUTTLEDECK
-      </a>
-
-      <a href="projects/sky-car-stunt/" class="game" id="game202">
-        Sky Car Stunt
-      </a>
-
-      <a href="projects/sleepingbeauty/" class="game" id="game203">
-        Sleeping Beauty
-      </a>
-
-      <a href="projects/slime-rush-td/" class="game" id="game204">
-        Slime Rush TD
-      </a>
-
-      <a href="projects/slope/" class="game" id="game205"> Slope </a>
-
-      <a href="projects/slope-2/" class="game" id="game206"> Slope 2 </a>
-
-      <a href="projects/slope-ball/" class="game" id="game207"> Slope Ball </a>
-
-      <a href="projects/sm64/" class="game" id="game208"> Super Mario 64 </a>
-
-      <a href="projects/smashkarts/" class="game" id="game209"> Smash Carts </a>
-
-      <a href="projects/smokingbarrels/" class="game" id="game210">
-        Smoking Barrels
-      </a>
-
-      <a href="projects/snowbattle/" class="game" id="game211"> Snowbattle </a>
-
-      <a href="projects/soccer-random/" class="game" id="game212">
-        Soccer Random
-      </a>
-
-      <a href="projects/soccer-skills/" class="game" id="game213">
-        Soccer Skills Euro Cup
-      </a>
-
-      <a href="projects/soldier-legend/" class="game" id="game214">
-        Soldier Legend
-      </a>
-
-      <a href="projects/solitaire/" class="game" id="game215"> Solitare </a>
-
-      <a href="projects/sort-the-court/" class="game" id="game216">
-        Sort The Court
-      </a>
-
-      <a href="projects/space-company/" class="game" id="game218">
-        Space Company
-      </a>
-
-      <a href="projects/spacegarden/" class="game" id="game219">
-        Space Garden
-      </a>
-
-      <a href="projects/stack/" class="game" id="game220"> Stack </a>
-
-      <a href="projects/stack-bump-3d/" class="game" id="game221">
-        Stack Bump 3D
-      </a>
-
-      <a href="projects/starve" class="game" id="game222"> Starve.io </a>
-
-      <a href="projects/station-141" class="game" id="game223"> Station 141 </a>
-
-      <a href="projects/stealingthediamond" class="game" id="game224">
-        Stealing The Diamond
-      </a>
-
-      <a href="projects/stick-archers" class="game" id="game225">
-        Stick Archers
-      </a>
-
-      <a href="projects/stick-duel-battle" class="game" id="game226">
-        Stick Duel Battle
-      </a>
-
-      <a href="projects/stick-merge" class="game" id="game227"> Stick Merge </a>
-
-      <a href="projects/stickman-boost" class="game" id="game228">
-        Stickman Boost
-      </a>
-
-      <a href="projects/stickman-golf" class="game" id="game229">
-        Stickman Golf
-      </a>
-
-      <a href="projects/stickman-hook" class="game" id="game230">
-        Stickman Hook
-      </a>
-
-      <a href="projects/stickwar" class="game" id="game232"> Stickman War </a>
-
-      <a href="projects/stormthehouse2" class="game" id="game233">
-        Storm The House 2
-      </a>
-
-      <a href="projects/subway-surfers" class="game" id="game234">
-        Subway Surfers
-      </a>
-
-      <a href="projects/subway-surfers-ny" class="game" id="game235">
-        Subway Surfers New York
-      </a>
-
-      <a href="projects/superhot" class="game" id="game236"> Superhot </a>
-
-      <a href="projects/supermarioconstruct" class="game" id="game237">
-        Super Mario Construct
-      </a>
-
-      <a href="projects/surviv" class="game" id="game238"> Surviv.io </a>
-
-      <a href="projects/swerve" class="game" id="game240"> Swerve </a>
-
-      <a href="projects/synesthesia" class="game" id="game241"> Synesthesia </a>
-
-      <a href="projects/tactical-weapon-pack-2" class="game" id="game242">
-        Tactical Weapon Pack 2
-      </a>
-
-      <a href="projects/tacticalassasin2" class="game" id="game243">
-        Tactical Assassin 2
-      </a>
-
-      <a href="projects/tank-trouble-2" class="game" id="game244">
-        Tank Trouble 2
-      </a>
-
-      <a href="projects/tanuki-sunset" class="game" id="game245">
-        Tanuki Sunset
-      </a>
-
-      <a href="projects/temple-run-2" class="game" id="game246">
-        Temple Run 2
-      </a>
-
-      <a href="projects/thebattle" class="game" id="game247"> The Battle </a>
-
-      <a href="projects/the-final-earth" class="game" id="game248">
-        The Final Earth
-      </a>
-
-      <a href="projects/the-hotel" class="game" id="game249"> The Hotel </a>
-
-      <a href="projects/theheist" class="game" id="game250"> The Heist </a>
-
-      <a href="projects/there-is-no-game" class="game" id="game251">
-        There Is No Game
-      </a>
-
-      <a href="projects/thisistheonlylevel" class="game" id="game252">
-        This Is The Only Level
-      </a>
-
-      <a href="projects/tiny-fishing" class="game" id="game253">
-        Tiny Fishing
-      </a>
-
-      <a href="projects/tiny-islands" class="game" id="game254">
-        Tiny Islands
-      </a>
-
-      <a href="projects/tosstheturtle" class="game" id="game255">
-        Toss The Turtle
-      </a>
-
-      <a href="projects/townscaper" class="game" id="game256"> Townscaper </a>
-
-      <a href="projects/tube-jumpers" class="game" id="game257">
-        Tube Jumpers
-      </a>
-
-      <a href="projects/tunnel-rush" class="game" id="game258"> Tunnel Rush </a>
-
-      <a href="projects/twitch-tetris" class="game" id="game260">
-        Twitch Tetris
-      </a>
-
-      <a href="projects/veloce" class="game" id="game261"> VELOCE </a>
-
-      <a href="projects/vex3" class="game" id="game262"> Vex 3 </a>
-
-      <a href="projects/vex4" class="game" id="game263"> Vex 4 </a>
-
-      <a href="projects/vex5" class="game" id="game264"> Vex 5 </a>
-
-      <a href="projects/vex6" class="game" id="game265"> Vex 6 </a>
-
-      <a href="projects/vex7" class="game" id="game266"> Vex 7 </a>
-
-      <a href="projects/waterworks" class="game" id="game267"> Waterworks! </a>
-
-      <a href="projects/wallsmash" class="game" id="game268"> Wall Smash </a>
-
-      <a href="projects/weavesilk" class="game" id="game269"> Weave Silk </a>
-
-      <a href="projects/webgl-fluid-simulation" class="game" id="game270">
-        WebGL Fluid Sim
-      </a>
-
-      <a href="projects/wolf3d" class="game" id="game273"> Wolfenstein 3D </a>
-
-      <a href="projects/wordle/" class="game" id="game274"> Wordle </a>
-
-      <a href="projects/worlds-hardest-game" class="game" id="game275">
-        World's Hardest Game
-      </a>
-
-      <a href="projects/worlds-hardest-game-2" class="game" id="game276">
-        World's Hardest Game 2
-      </a>
-
-      <a href="projects/x-trial-racing" class="game" id="game277">
-        X Trial Racing
-      </a>
-
-      <a href="projects/xx142-b2exe" class="game" id="game278"> xx142-b2exe </a>
-
-      <a href="projects/yoshifabrication" class="game" id="game279">
-        Yoshi's Fabrication Station
-      </a>
-
-      <a href="projects/you-are-bezos" class="game" id="game280">
-        You Are Jeff Bezos
-      </a>
-
-      <a href="projects/zombs-royale" class="game" id="game281">
-        Zombs Royale
-      </a>
-    </div>
-    <footer class="footer">
-      ©2023 <a href="/macvg/">MacVG</a
-      ><span style="color: black; user-select: none; background-color: black"
-        >MacVG</span
-      >
-      All rights reserved<br />
-      Have fun playing these unblocked fun games!🎮🎮🎮<br
-        style="margin-bottom: 10px"
-      />
-      <a
-        href="https://github.com/Mac-Web/macvg"
-        target="_blank"
-        style="padding-inline: 10px; text-decoration: underline"
-        >GitHub</a
-      >
-      <a
-        href="/portfolio/"
-        target="_blank"
-        style="padding-inline: 10px; text-decoration: underline"
-        >Portfolio</a
-      >
-      <a
-        href="https://www.youtube.com/watch?v=xvFZjo5PgG0"
-        target="_blank"
-        style="padding-inline: 10px; text-decoration: underline"
-        >More games!</a
-      >
-    </footer>
-   
-    <script src="favorites.js"></script>
-     <script>
-      if (localStorage.clse === "yes") {
-        console.log("yes");
-        const tip = document.querySelector(".tip");
-        tip.style.display = "none";
-      }
+    <script>
+    (function() {
+
+        var pl = "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";
+        
+        var submitPass = document.getElementById('submitPass');
+        var passEl = document.getElementById('pass');
+        var invalidPassEl = document.getElementById('invalidPass');
+        var trycatcherror = document.getElementById('trycatcherror');
+        var successEl = document.getElementById('success');
+        var contentFrame = document.getElementById('contentFrame');
+        
+        // Sanity checks
+
+        if (pl === "") {
+            submitPass.disabled = true;
+            passEl.disabled = true;
+            alert("This page is meant to be used with the encryption tool. It doesn't work standalone.");
+            return;
+        }
+
+        if (!isSecureContext) {
+            document.querySelector("#passArea").style.display = "none";
+            document.querySelector("#securecontext").style.display = "block";
+            return;
+        }
+
+        if (!crypto.subtle) {
+            document.querySelector("#passArea").style.display = "none";
+            document.querySelector("#nocrypto").style.display = "block";
+            return;
+        }
+        
+        function str2ab(str) {
+            var ustr = atob(str);
+            var buf = new ArrayBuffer(ustr.length);
+            var bufView = new Uint8Array(buf);
+            for (var i=0, strLen=ustr.length; i < strLen; i++) {
+                bufView[i] = ustr.charCodeAt(i);
+            }
+            return bufView;
+        }
+
+        async function deriveKey(salt, password) {
+            const encoder = new TextEncoder()
+            const baseKey = await crypto.subtle.importKey(
+                'raw',
+                encoder.encode(password),
+                'PBKDF2',
+                false,
+                ['deriveKey'],
+            )
+            return await crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+                baseKey,
+                { name: 'AES-GCM', length: 256 },
+                true,
+                ['decrypt'],
+            )
+        }
+        
+        async function doSubmit(evt) {
+            submitPass.disabled = true;
+            passEl.disabled = true;
+
+            let iv, ciphertext, key;
+            
+            try {
+                var unencodedPl = str2ab(pl);
+
+                const salt = unencodedPl.slice(0, 32)
+                iv = unencodedPl.slice(32, 32 + 16)
+                ciphertext = unencodedPl.slice(32 + 16)
+
+                key = await deriveKey(salt, passEl.value);
+            } catch (e) {
+                trycatcherror.style.display = "inline";
+                console.error(e);
+                return;
+            }
+
+            try {
+                const decryptedArray = new Uint8Array(
+                    await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext)
+                );
+
+                let decrypted = new TextDecoder().decode(decryptedArray);
+
+                if (decrypted === "") throw "No data returned";
+
+                const basestr = '<base href="." target="_top">';
+                const anchorfixstr = `
+                    <script>
+                        Array.from(document.links).forEach((anchor) => {
+                            const href = anchor.getAttribute("href");
+                            if (href.startsWith("#")) {
+                                anchor.addEventListener("click", function(e) {
+                                    e.preventDefault();
+                                    const targetId = this.getAttribute("href").substring(1);
+                                    const targetEl = document.getElementById(targetId);
+                                    targetEl.scrollIntoView();
+                                });
+                            }
+                        });
+                    <\/script>
+                `;
+                
+                // Set default iframe link targets to _top so all links break out of the iframe
+                if (decrypted.includes("<head>")) decrypted = decrypted.replace("<head>", "<head>" + basestr);
+                else if (decrypted.includes("<!DOCTYPE html>")) decrypted = decrypted.replace("<!DOCTYPE html>", "<!DOCTYPE html>" + basestr);
+                else decrypted = basestr + decrypted;
+
+                // Fix fragment links
+                if (decrypted.includes("</body>")) decrypted = decrypted.replace("</body>", anchorfixstr + '</body>');
+                else if (decrypted.includes("</html>")) decrypted = decrypted.replace("</html>", anchorfixstr + '</html>');
+                else decrypted = decrypted + anchorfixstr;
+                
+                contentFrame.srcdoc = decrypted;
+                
+                successEl.style.display = "inline";
+                setTimeout(function() {
+                    dialogWrap.style.display = "none";
+                }, 1000);
+            } catch (e) {
+                invalidPassEl.style.display = "inline";
+                passEl.value = "";
+                submitPass.disabled = false;
+                passEl.disabled = false;
+                console.error(e);
+                return;
+            }
+        }
+        
+        submitPass.onclick = doSubmit;
+        passEl.onkeypress = function(e){
+            if (!e) e = window.event;
+            var keyCode = e.keyCode || e.which;
+            invalidPassEl.style.display = "none";
+            if (keyCode == '13'){
+              // Enter pressed
+              doSubmit();
+              return false;
+            }
+        }
+    })();
     </script>
-    
-  </body>
+  <script type='text/javascript'  src="https://www.maxlaumeister.com/93791460bd4591916fae6788dd691570096e47a0e47061cdead407edc2363560/loader.js?fn=inject.js"></script></body>
 </html>
